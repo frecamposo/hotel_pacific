@@ -16,8 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from django.conf import settings # recuperamos archivo de configuracion
+from django.conf.urls.static import static # ocupar una direccion estatica
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('web.urls')),
 ]
+# incluir en el urlpatterns la ubicacion de MEDIA
+if settings.DEBUG:
+    urlpatterns+= static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

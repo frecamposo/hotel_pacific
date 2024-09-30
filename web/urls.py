@@ -1,23 +1,19 @@
-"""
-URL configuration for hotel project.
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path
 from .views import *
 
 urlpatterns = [
     path('', inicio,name='INICIO'),
+    path('quienes_somos',quienes_somos,name='QS'),
+    path('reserva',reserva,name='RE'),
+    path('contacto',contacto,name='CO'),
+    path('habitaciones',habitaciones,name='HA'),
+    path('habitacion',det_habitacion,name='DA'),
+    path('servicios',servicios,name='SE'),  
+    path('testimonios',testimonial,name='TE'),   
+    path('acerca',acerca,name='AS'),   
+    path('login',login,name='LO'),     
+    path('registro_turista',registro_turista,name='RETU'),    
+      
 ]
