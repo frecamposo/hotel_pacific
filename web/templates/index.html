@@ -23,10 +23,11 @@
                                 <div class="col-md-3">
                                     <select class="form-select">
                                         <option selected>Adultos {{valor}}</option>
-                                        <option value="1">Adult 1</option>
-                                        <option value="2">Adult 2</option>
-                                        <option value="3">Adult 3</option>
-                                        <option value="4">{{habitacion}}</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
                                     </select>
                                 </div>
                                 {% comment %} <div class="col-md-3">
@@ -193,18 +194,22 @@
         <div class="container-xxl testimonial mt-5 py-5 bg-dark wow zoomIn" data-wow-delay="0.1s" style="margin-bottom: 90px;">
             <div class="container">
                 <div class="owl-carousel testimonial-carousel py-5">
+
+                    {% for com in comentarios %}                                        
                     <div class="testimonial-item position-relative bg-white rounded overflow-hidden">
-                        <p> lugar tranquilo, pocos pasajeros, buen desayuno, excelente limpieza y siempre funcionó netflix y wifi </p>
+                        <p> {{com.comentario}} </p>
                         <div class="d-flex align-items-center">
-                            <img class="img-fluid flex-shrink-0 rounded" src="{% static 'img/testimonial-1.jpg' %}" style="width: 45px; height: 45px;">
+                            <img class="img-fluid flex-shrink-0 rounded" src="{% static 'img/user.png' %}" style="width: 45px; height: 45px;">
                             <div class="ps-3">
-                                <h6 class="fw-bold mb-1">Andrea Herrera</h6>
-                                <small>Contadora</small>
+                                <h6 class="fw-bold mb-1">{{com.nombre}}</h6>
+                                <small> {{com.fecha_creacion}}</small>
                             </div>
                         </div>
                         <i class="fa fa-quote-right fa-3x text-primary position-absolute end-0 bottom-0 me-4 mb-n1"></i>
                     </div>
-                    <div class="testimonial-item position-relative bg-white rounded overflow-hidden">
+                    {% endfor %}
+
+                    {% comment %} <div class="testimonial-item position-relative bg-white rounded overflow-hidden">
                         <p>Es un lugar con mucha tranquilidad, alejado de ruidos, completamente inmerso en el valle, los desayunos exquisitos</p>
                         <div class="d-flex align-items-center">
                             <img class="img-fluid flex-shrink-0 rounded" src="{% static 'img/testimonial-2.jpg' %}" style="width: 45px; height: 45px;">
@@ -215,6 +220,7 @@
                         </div>
                         <i class="fa fa-quote-right fa-3x text-primary position-absolute end-0 bottom-0 me-4 mb-n1"></i>
                     </div>
+
                     <div class="testimonial-item position-relative bg-white rounded overflow-hidden">
                         <p>Un Lugar estrategico, céntrico y nos sentimos como en casa, tenia todo muy completo. Agradecemos mucho la ayuda de los dueños, para poder quedarnos más de la hora de salida. </p>
                         <div class="d-flex align-items-center">
@@ -225,7 +231,8 @@
                             </div>
                         </div>
                         <i class="fa fa-quote-right fa-3x text-primary position-absolute end-0 bottom-0 me-4 mb-n1"></i>
-                    </div>
+                    </div> {% endcomment %}
+
                 </div>
             </div>
         </div>

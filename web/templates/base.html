@@ -81,23 +81,33 @@
           </div>
           <div class="col-lg-9">
             <div class="row gx-0 bg-white d-none d-lg-flex">
-              <div class="col-lg-7 px-5 text-start">
+              <div class="col-lg-8 px-5 text-start">
                 <div class="h-100 d-inline-flex align-items-center py-2 me-4">
                   <i class="fa fa-envelope text-primary me-2"></i>
                   <p class="mb-0">info@hpr.com</p>
                 </div>
+
                 <div class="h-100 d-inline-flex align-items-center py-2">
                   <i class="fa fa-phone-alt text-primary me-2"></i>
                   <p class="mb-0">+012 345 6789</p>
                 </div>
+                 {% if user.is_authenticated %}
+                <div class="h-100 d-inline-flex align-items-center py-2" style="margin-left: 25px;">
+                  <i class="fa fa-user-alt text-primary me-2"></i>
+                  <p class="mb-0"><b>Bienvenido: {{user.first_name}} {{user.last_name}}</b></p>
+                </div>
+              {% endif %}
               </div>
-              <div class="col-lg-5 px-5 text-end">
+
+              <div class="col-lg-4 px-5 text-end">
                 <div class="d-inline-flex align-items-center py-2">
                   <a class="me-3" href=""><i class="fab fa-facebook-f"></i></a>
                   <a class="me-3" href=""><i class="fab fa-twitter"></i></a>
                   <a class="me-3" href=""><i class="fab fa-linkedin-in"></i></a>
                   <a class="me-3" href=""><i class="fab fa-instagram"></i></a>
                   <a class="" href=""><i class="fab fa-youtube"></i></a>
+                  <div id="valor_dolar" style="padding: 20px;"></div>
+                  
                 </div>
               </div>
             </div>
@@ -132,21 +142,27 @@
                       href="#"
                       class="nav-link dropdown-toggle"
                       data-bs-toggle="dropdown"
-                      >Pages</a
+                      >Administracion</a
                     >
                     <div class="dropdown-menu rounded-0 m-0">
-                      <a href="booking.html" class="dropdown-item">Booking</a>
-                      <a href="team.html" class="dropdown-item">Our Team</a>
-                      <a href="testimonial.html" class="dropdown-item"
-                        >Testimonial</a
-                      >
+                      <a href="{% url 'LH' %}" class="dropdown-item">Listado de Habitaciones</a>
+                      <a href="team.html" class="dropdown-item">Check In</a>
+                      <a href="testimonial.html" class="dropdown-item">Check Out</a>
                     </div>
                   </div>
                   <a href="{% url 'CO' %}" class="nav-item nav-link">Contacto</a>
                   <a href="{% url 'RETU' %}" class="nav-item nav-link"
                     >Registro Clientes</a
                   >
-                  <a href="{% url 'LO' %}" class="nav-item nav-link">Login</a>
+                  {% if user.is_authenticated %}
+                    <a href="{% url 'CC' %}" class="nav-item nav-link">Cerrar Sesion</a>
+                  {% else %}
+                    <a href="{% url 'LO' %}" class="nav-item nav-link">Login</a>
+                  {% endif %}
+                  
+                  
+                  
+
                 </div>
               </div>
             </nav>
@@ -357,6 +373,28 @@
     
     {% endblock js %}
     <!-- Template Javascript -->
+    <script>
+      $(document).ready(function(){
+        recuperaDolar();
+      })
+    </script> 
     <script src="{% static 'js/main.js' %}"></script>
+    <script>
+                function recuperaDolar() {
+                    fetch("https://mindicador.cl/api/dolar")
+                    .then(function (response) {
+                        // status 200 "OK"
+                        if (response.status!=200) {
+                            alert("no pudo conectar con el servidor");
+                            return;
+                        }
+                        response.json().then(function(data) {
+                            console.log(data);
+                            var dolar= data.serie[0].valor;
+                            document.getElementById('valor_dolar').innerHTML="$"+dolar;
+                        })
+                    })
+                }
+            </script>
   </body>
 </html>

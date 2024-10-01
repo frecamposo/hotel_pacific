@@ -15,22 +15,30 @@
                         
                         <div class="wow fadeInUp" data-wow-delay="0.2s" >
                             <div style="margin: auto;"> 
-                            <form >
+                            <form action="{% url 'LO' %}" method="post">
+                                {% csrf_token %}
                                 <div class="row g-3">                                    
                                     <div class="col-md-6">
                                         <div class="form-floating">
-                                            <input type="email" class="form-control" id="email" placeholder="Ingrese su correo electronico">
+                                            <input type="email" class="form-control" id="email" name="email" placeholder="Ingrese su correo electronico">
                                             <label for="email">Correo Electronico</label>
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="form-floating">
-                                            <input type="password" class="form-control" id="subject" placeholder="ingrese su password">
+                                            <input type="password" class="form-control" id="pass" name="pass" placeholder="ingrese su password">
                                             <label for="subject">Contraseña</label>
                                         </div>
                                     </div>                                    
                                     <div class="col-12">
                                         <button class="btn btn-primary w-100 py-3" type="submit">Ingresar</button>
+                                        {% if mensaje %}
+                                        <div style="text-align: center;padding: 20px;">
+                                            <h2>{{mensaje}}</h2>
+                                        </div>
+                                                
+                                        {% endif %}
+                                            
                                     </div>
                                 </div>
                             </form>

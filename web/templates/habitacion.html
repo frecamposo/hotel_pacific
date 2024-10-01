@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block contenido %}
 
       <div class="container-xxl py-5">
@@ -14,11 +14,13 @@
               >
                 <div class="carousel-inner">
                   <div class="carousel-item active">
-                    <img class="w-100" src="img/carousel-1.jpg" alt="Image" />
+                    <img class="w-100" src="{{habitacion.imagen.url}}" alt="Image" />
                   </div>
+                  {% for f in fotos %}                
                   <div class="carousel-item">
-                    <img class="w-100" src="img/carousel-2.jpg" alt="Image" />
+                    <img class="w-100" src="{{f.foto.url}}" alt="Image" />
                   </div>
+                  {% endfor %}
                 </div>
                 <button
                   class="carousel-control-prev"
@@ -45,57 +47,44 @@
                   <span class="visually-hidden">Next</span>
                 </button>
               </div>
+
+
               <div class="d-flex align-items-center mb-4">
-                <h1 class="mb-0">Junior Suite</h1>
+                <h1 class="mb-0">{{habitacion.id_th.descripcion}} {{hab.numero}}</h1>
                 <div class="ps-3">
+
                   <small class="fa fa-star text-primary"></small>
-                  <small class="fa fa-star text-primary"></small>
-                  <small class="fa fa-star text-primary"></small>
-                  <small class="fa fa-star text-primary"></small>
-                  <small class="fa fa-star text-primary"></small>
+                  {{hab.num_star}} Estrellas
                 </div>
               </div>
               <div class="d-flex flex-wrap pb-4 m-n1">
-                <small class="bg-light rounded py-1 px-3 m-1"
-                  ><i class="fa fa-bed text-primary me-2"></i>3 Bed</small
-                >
-                <small class="bg-light rounded py-1 px-3 m-1"
-                  ><i class="fa fa-bath text-primary me-2"></i>2 Bath</small
-                >
+                <small class="bg-light rounded py-1 px-3 m-1">
+                    <i class="fa fa-bed text-primary me-2"></i>{{hab.habitaciones}} camas
+                </small>
+                <small class="bg-light rounded py-1 px-3 m-1">
+                    <i class="fa fa-bath text-primary me-2"></i>{{hab.banos}} baños
+                </small>
+                {% if habitacion.wifi == 's' %}
                 <small class="bg-light rounded py-1 px-3 m-1"
                   ><i class="fa fa-wifi text-primary me-2"></i>Wifi</small
                 >
+                {% endif %}
+                {% if habitacion.tv_cable == 's' %}
                 <small class="bg-light rounded py-1 px-3 m-1"
                   ><i class="fa fa-tv text-primary me-2"></i>TV</small
                 >
+                {% endif %}
+                {% if habitacion.desayuno == 's' %}
                 <small class="bg-light rounded py-1 px-3 m-1"
-                  ><i class="fa fa-fan text-primary me-2"></i>AC</small
+                  ><i class="fa fa-utensils text-primary me-2"></i>Desayuno</small
                 >
-                <small class="bg-light rounded py-1 px-3 m-1"
-                  ><i class="fa fa-user-cog text-primary me-2"></i
-                  >Laundry</small
-                >
-                <small class="bg-light rounded py-1 px-3 m-1"
-                  ><i class="fa fa-utensils text-primary me-2"></i>Dinner</small
-                >
+                {% endif %}  
               </div>
               <p>
-                Sadipscing labore amet rebum est et justo gubergren. Et eirmod
-                ipsum sit diam ut magna lorem. Nonumy vero labore lorem sanctus
-                rebum et lorem magna kasd, stet amet magna accusam consetetur
-                eirmod. Kasd accusam sit ipsum sadipscing et at at sanctus et.
-                Ipsum sit gubergren dolores et, consetetur justo invidunt at et
-                aliquyam ut et vero clita. Diam sea sea no sed dolores diam
-                nonumy, gubergren sit stet no diam kasd vero.
+                {{habitacion.descripcion}}
               </p>
               <p class="mb-5">
-                Voluptua est takimata stet invidunt sed rebum nonumy stet, clita
-                aliquyam dolores vero stet consetetur elitr takimata rebum
-                sanctus. Sit sed accusam stet sit nonumy kasd diam dolores,
-                sanctus lorem kasd duo dolor dolor vero sit et. Labore ipsum duo
-                sanctus amet eos et. Consetetur no sed et aliquyam ipsum justo
-                et, clita lorem sit vero amet amet est dolor elitr, stet et no
-                diam sit. Dolor erat justo dolore sit invidunt.
+                
               </p>
               <div class="tab-class wow fadeInUp" data-wow-delay="0.1s">
                 <ul
@@ -108,7 +97,7 @@
                       href="#tab-1"
                     >
                       <i class="fa fa-eye text-primary me-2"></i>
-                      <h6 class="mb-0">Overview</h6>
+                      <h6 class="mb-0">Que podemos Hacer</h6>
                     </a>
                   </li>
                   <li class="nav-item">
@@ -118,7 +107,7 @@
                       href="#tab-2"
                     >
                       <i class="fa fa-dollar text-primary me-2"></i>
-                      <h6 class="mb-0">Pricing</h6>
+                      <h6 class="mb-0">Valor</h6>
                     </a>
                   </li>
                   <li class="nav-item">
@@ -128,7 +117,7 @@
                       href="#tab-3"
                     >
                       <i class="fa fa-map-marker-alt text-primary me-2"></i>
-                      <h6 class="mb-0">Location</h6>
+                      <h6 class="mb-0">Ubicacion</h6>
                     </a>
                   </li>
                   <li class="nav-item">
@@ -138,87 +127,36 @@
                       href="#tab-4"
                     >
                       <i class="fa fa-star text-primary me-2"></i>
-                      <h6 class="mb-0">Reviews(3)</h6>
+                      <h6 class="mb-0">Comentarios</h6>
                     </a>
                   </li>
                 </ul>
                 <div class="tab-content">
                   <div id="tab-1" class="tab-pane fade show p-0 active">
                     <p>
-                      Sadipscing labore amet rebum est et justo gubergren. Et
-                      eirmod ipsum sit diam ut magna lorem. Nonumy vero labore
-                      lorem sanctus rebum et lorem magna kasd, stet amet magna
-                      accusam consetetur eirmod. Kasd accusam sit ipsum
-                      sadipscing et at at sanctus et. Ipsum sit gubergren
-                      dolores et, consetetur justo invidunt at et aliquyam ut et
-                      vero clita. Diam sea sea no sed dolores diam nonumy,
-                      gubergren sit stet no diam kasd vero.
+                      Ubicada en la zona sur de Chile, Valdivia es un lugar encantador de clima oceánico cuya principal característica es asimilar diversos elementos culturales tanto nativos como exógenos. Con abundante oferta turística, existen muchos lugares gratuitos en Valdivia para conocer y deleitarse facilitando así, su accesibilidad y exploración.
+
+Conocida por su rica historia, impresionante arquitectura, hermosos paisajes y deliciosa gastronomía, Valdivia es un destino turístico cada vez más popular entre los viajeros de todo el mundo.
+
+La ciudad se encuentra en la confluencia de los ríos Calle-Calle, Cau Cau y Valdivia, lo que la convierte en un lugar ideal para explorar y disfrutar de la belleza natural del sur de Chile.
+
+Uno de los principales atractivos turísticos de la ciudad es su arquitectura, componente que refleja una potente fusión cultural. En efecto, la combinación de la cultura española, alemana y de los mapuches ha sido clave para dar vida a sus construcciones y, por ende, para el desarrollo arquitectónico de la ciudad.
                     </p>
-                    <p>
-                      Voluptua est takimata stet invidunt sed rebum nonumy stet,
-                      clita aliquyam dolores vero stet consetetur elitr takimata
-                      rebum sanctus. Sit sed accusam stet sit nonumy kasd diam
-                      dolores, sanctus lorem kasd duo dolor dolor vero sit et.
-                      Labore ipsum duo sanctus amet eos et. Consetetur no sed et
-                      aliquyam ipsum justo et, clita lorem sit vero amet amet
-                      est dolor elitr, stet et no diam sit. Dolor erat justo
-                      dolore sit invidunt.
-                    </p>
+                    
                   </div>
                   <div id="tab-2" class="tab-pane fade show p-0">
                     <p>
-                      Voluptua est takimata stet invidunt sed rebum nonumy stet,
-                      clita aliquyam dolores vero stet consetetur elitr takimata
-                      rebum sanctus. Sit sed accusam stet sit nonumy kasd diam
-                      dolores, sanctus lorem kasd duo dolor dolor vero sit et.
-                      Labore ipsum duo sanctus amet eos et. Consetetur no sed et
-                      aliquyam ipsum justo et, clita lorem sit vero amet amet
-                      est dolor elitr, stet et no diam sit. Dolor erat justo
-                      dolore sit invidunt.
+                      Los valores de la habitacion son estandar durante todo el año,
                     </p>
                     <div class="row g-4">
                       <div
                         class="col-sm-6 d-flex align-items-center justify-content-between"
                       >
-                        <span>Nightly:</span>
+                        <span>Valor por Noche:</span>
                         <hr class="flex-grow-1 my-0 mx-3" />
-                        <span>$100</span>
+                        <span>${{habitacion.precio_noche}}</span>
                       </div>
-                      <div
-                        class="col-sm-6 d-flex align-items-center justify-content-between"
-                      >
-                        <span>Weekly:</span>
-                        <hr class="flex-grow-1 my-0 mx-3" />
-                        <span>$100</span>
-                      </div>
-                      <div
-                        class="col-sm-6 d-flex align-items-center justify-content-between"
-                      >
-                        <span>Monthly:</span>
-                        <hr class="flex-grow-1 my-0 mx-3" />
-                        <span>$100</span>
-                      </div>
-                      <div
-                        class="col-sm-6 d-flex align-items-center justify-content-between"
-                      >
-                        <span>Weekends:</span>
-                        <hr class="flex-grow-1 my-0 mx-3" />
-                        <span>$100</span>
-                      </div>
-                      <div
-                        class="col-sm-6 d-flex align-items-center justify-content-between"
-                      >
-                        <span>Additional Guest:</span>
-                        <hr class="flex-grow-1 my-0 mx-3" />
-                        <span>$100</span>
-                      </div>
-                      <div
-                        class="col-sm-6 d-flex align-items-center justify-content-between"
-                      >
-                        <span>Security Deposit:</span>
-                        <hr class="flex-grow-1 my-0 mx-3" />
-                        <span>$100</span>
-                      </div>
+                
                     </div>
                   </div>
                   <div id="tab-3" class="tab-pane fade show p-0">
@@ -234,7 +172,7 @@
                             <i class="fa fa-map-marker-alt text-primary"></i>
                           </div>
                         </div>
-                        <span>123 Street, New York, USA</span>
+                        <span>Gral. Korner 770, 4930680 Villarrica, Araucanía</span>
                       </div>
                       <div class="col-md-4 d-flex align-items-center">
                         <div
@@ -247,7 +185,7 @@
                             <i class="fa fa-phone-alt text-primary"></i>
                           </div>
                         </div>
-                        <span>+012 345 67890</span>
+                        <span>(45) 241 1833</span>
                       </div>
                       <div class="col-md-4 d-flex align-items-center">
                         <div
@@ -262,17 +200,15 @@
                         </div>
                         <span
                           ><a
-                            href="/cdn-cgi/l/email-protection"
-                            class="__cf_email__"
-                            data-cfemail="30595e565f705548515d405c551e535f5d"
-                            >[email&#160;protected]</a
+                            href="mailto:info@hpr.com"                            
+                            >Email Reserva</a
                           ></span
                         >
                       </div>
                     </div>
                     <iframe
                       class="position-relative rounded w-100 h-100"
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3001156.4288297426!2d-78.01371936852176!3d42.72876761954724!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4ccc4bf0f123a5a9%3A0xddcfc6c1de189567!2sNew%20York%2C%20USA!5e0!3m2!1sen!2sbd!4v1603794290143!5m2!1sen!2sbd"
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d196242.43528422824!2d-73.4069923814072!3d-39.778090581798445!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9615e94f20de4501%3A0x89b7301051537813!2sValdivia%2C%20Los%20R%C3%ADos!5e0!3m2!1ses!2scl!4v1727699936120!5m2!1ses!2scl"
                       frameborder="0"
                       style="min-height: 350px; border: 0"
                       allowfullscreen
@@ -281,100 +217,48 @@
                     ></iframe>
                   </div>
                   <div id="tab-4" class="tab-pane fade show p-0">
+                    
+                    {% if cantidad %}
+                    
+                    
                     <div class="mb-4">
-                      <h4 class="mb-4">3 Reviews</h4>
+
+                      <h4 class="mb-4">{{cantidad}} Comentarios</h4>
+
+                        {% for com in comentarios  %}
+                        
                       <div class="d-flex mb-4">
                         <img
-                          src="img/user.jpg"
+                          src="{% static 'img/user.png' %}"
                           class="img-fluid rounded"
                           style="width: 45px; height: 45px"
                         />
                         <div class="ps-3">
-                          <h6>
-                            John Doe
-                            <small class="text-body fw-normal fst-italic"
-                              >01 Jan 2045</small
-                            >
+                          <h6>{{com.nombre}} <small class="text-body fw-normal fst-italic"> {{com.fecha_creacion}}</small>
                           </h6>
-                          <div class="mb-2">
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                          </div>
                           <p class="mb-2">
-                            Diam amet duo labore stet elitr invidunt ea clita
-                            ipsum voluptua, tempor labore accusam ipsum et no
-                            at. Kasd diam tempor rebum magna dolores sed eirmod
+                            {{com.comentario}}
                           </p>
-                          <a href><i class="fa fa-reply me-2"></i> Reply</a>
+                          
                         </div>
                       </div>
-                      <div class="d-flex mb-4">
-                        <img
-                          src="img/user.jpg"
-                          class="img-fluid rounded"
-                          style="width: 45px; height: 45px"
-                        />
-                        <div class="ps-3">
-                          <h6>
-                            John Doe
-                            <small class="text-body fw-normal fst-italic"
-                              >01 Jan 2045</small
-                            >
-                          </h6>
-                          <div class="mb-2">
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                          </div>
-                          <p class="mb-2">
-                            Diam amet duo labore stet elitr invidunt ea clita
-                            ipsum voluptua, tempor labore accusam ipsum et no
-                            at. Kasd diam tempor rebum magna dolores sed eirmod
-                          </p>
-                          <a href><i class="fa fa-reply me-2"></i> Reply</a>
-                        </div>
-                      </div>
-                      <div class="d-flex ms-5 mb-4">
-                        <img
-                          src="img/user.jpg"
-                          class="img-fluid rounded"
-                          style="width: 45px; height: 45px"
-                        />
-                        <div class="ps-3">
-                          <h6>
-                            John Doe
-                            <small class="text-body fw-normal fst-italic"
-                              >01 Jan 2045</small
-                            >
-                          </h6>
-                          <div class="mb-2">
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                          </div>
-                          <p class="mb-2">
-                            Diam amet duo labore stet elitr invidunt ea clita
-                            ipsum voluptua, tempor labore accusam ipsum et no
-                            at. Kasd diam tempor rebum magna dolores sed eirmod
-                          </p>
-                          <a href><i class="fa fa-reply me-2"></i> Reply</a>
-                        </div>
-                      </div>
+
+                    
+                        {% endfor %}
+                
                     </div>
+                    {% endif %}
+
+
                     <div class="bg-light p-4 p-md-5">
-                      <h4 class="mb-4">Leave A Review</h4>
-                      <form>
+                      <h4 class="mb-4">Deje una Reseña</h4>
+                      <form action="{% url 'DA' habitacion.id_h %}" method="post">
+                        {% csrf_token %}
                         <div class="row g-3">
                           <div class="col-12 d-flex align-items-center">
-                            <h6 class="mb-0 me-2">Rate Me:</h6>
+                            <h6 class="mb-0 me-2">Califiqueme:</h6>
                             <div id="halfstarsReview" class="fs-3 me-2"></div>
+
                             <input
                               type="text"
                               value
@@ -385,10 +269,19 @@
                             />
                           </div>
                           <div class="col-12 col-sm-6">
+                          <input
+                              type="hidden"
+                              class="form-control bg-white border-0"
+                              placeholder="Tu Nombre"
+                              value="{{habitacion.id_h}}"
+                              name="id_h"
+                              style="height: 55px"
+                            />
                             <input
                               type="text"
                               class="form-control bg-white border-0"
-                              placeholder="Your Name"
+                              placeholder="Tu Nombre"
+                              name="nombre"
                               style="height: 55px"
                             />
                           </div>
@@ -396,23 +289,18 @@
                             <input
                               type="email"
                               class="form-control bg-white border-0"
-                              placeholder="Your Email"
+                              placeholder="Tu Email"
+                              name="email"
                               style="height: 55px"
                             />
                           </div>
-                          <div class="col-12">
-                            <input
-                              type="text"
-                              class="form-control bg-white border-0"
-                              placeholder="Website"
-                              style="height: 55px"
-                            />
-                          </div>
+                          
                           <div class="col-12">
                             <textarea
                               class="form-control bg-white border-0"
                               rows="5"
-                              placeholder="Comment"
+                              placeholder="Comentario"
+                              name="comentario"
                             ></textarea>
                           </div>
                           <div class="col-12">
@@ -420,8 +308,9 @@
                               class="btn btn-primary w-100 py-3"
                               type="submit"
                             >
-                              Leave Your Review
+                              Envie su Comentario
                             </button>
+                            {{mensaje}}
                           </div>
                         </div>
                       </form>
@@ -431,16 +320,18 @@
               </div>
             </div>
 
+
+            <!-- reserva -->
             <div class="col-lg-4">
               <div class="bg-light mb-5 wow fadeInUp" data-wow-delay="0.1s">
                 <div class="border-bottom text-center text-dark p-3 pt-4 mb-3">
                   <span class="align-top fs-4 lh-base">$</span>
-                  <span class="align-middle fs-1 lh-sm fw-bold">49.00</span>
-                  <span class="align-bottom fs-6 lh-lg">/ Night</span>
+                  <span class="align-middle fs-1 lh-sm fw-bold">{{habitacion.precio_noche}}</span>
+                  <span class="align-bottom fs-6 lh-lg">/ Noche</span>
                 </div>
                 <div class="row g-3 p-4 pt-2">
                   <div class="col-12">
-                    <div class="date" id="date3" data-target-input="nearest">
+                    <div class="date" id="date3" name="date3" data-target-input="nearest">
                       <input
                         type="text"
                         class="form-control datetimepicker-input"
@@ -451,7 +342,7 @@
                     </div>
                   </div>
                   <div class="col-12">
-                    <div class="date" id="date4" data-target-input="nearest">
+                    <div class="date" id="date4"  name="date4" data-target-input="nearest">
                       <input
                         type="text"
                         class="form-control datetimepicker-input"
@@ -463,77 +354,31 @@
                   </div>
                   <div class="col-12">
                     <select class="form-select">
-                      <option selected>Adult</option>
-                      <option value="1">Adult 1</option>
-                      <option value="2">Adult 2</option>
-                      <option value="3">Adult 3</option>
+                      <option selected>Adultos</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
                     </select>
                   </div>
+                  
+                  {% if habitacion.activa == "s" %}
                   <div class="col-12">
-                    <select class="form-select">
-                      <option selected>Child</option>
-                      <option value="1">Child 1</option>
-                      <option value="2">Child 2</option>
-                      <option value="3">Child 3</option>
-                    </select>
+                    <input type="text" name="id_h" value="{{habitacion.id_h}}">
+                    <input type="text" name="id_h" value="{{user.username}}">
+                    <button class="btn btn-primary py-3 w-100">Reservar Ahora</button>
                   </div>
-                  <div class="col-12">
-                    <select class="form-select">
-                      <option selected>Night</option>
-                      <option value="1">Night 1</option>
-                      <option value="2">Night 2</option>
-                      <option value="3">Night 3</option>
-                    </select>
+                  {% else %}
+                    <div class="col-12">
+                    <button class="btn btn-danger py-3 w-100">Ocupada</button>
                   </div>
-                  <div class="col-12">
-                    <button class="btn btn-primary py-3 w-100">Book Now</button>
-                  </div>
+                  {% endif %}
+                  
                 </div>
               </div>
 
-              <div class="bg-light p-4 mb-5 wow fadeInUp" data-wow-delay="0.1s">
-                <h4 class="section-title text-start mb-4">Category</h4>
-                <a class="d-block position-relative mb-3" href>
-                  <img class="img-fluid" src="img/cat-1.jpg" alt />
-                  <div
-                    class="d-flex position-absolute top-0 start-0 w-100 h-100 p-3"
-                    style="background: rgba(0, 0, 0, 0.3)"
-                  >
-                    <h5 class="text-white m-0 mt-auto">luxury Room</h5>
-                  </div>
-                </a>
-                <a class="d-block position-relative mb-3" href>
-                  <img class="img-fluid" src="img/cat-2.jpg" alt />
-                  <div
-                    class="d-flex position-absolute top-0 start-0 w-100 h-100 p-3"
-                    style="background: rgba(0, 0, 0, 0.3)"
-                  >
-                    <h5 class="text-white m-0 mt-auto">Couple Room</h5>
-                  </div>
-                </a>
-                <a class="d-block position-relative" href>
-                  <img class="img-fluid" src="img/cat-3.jpg" alt />
-                  <div
-                    class="d-flex position-absolute top-0 start-0 w-100 h-100 p-3"
-                    style="background: rgba(0, 0, 0, 0.3)"
-                  >
-                    <h5 class="text-white m-0 mt-auto">Single Room</h5>
-                  </div>
-                </a>
-              </div>
 
-              <div class="border p-1 wow fadeInUp" data-wow-delay="0.1s">
-                <div class="border p-4">
-                  <h4 class="section-title text-start mb-4">Help & Support</h4>
-                  <p>
-                    Lorem sed erat elitr magna magna labore duo elitr ipsum duo.
-                    Et sed duo rebum lorem sed stet sed
-                  </p>
-                  <div class="bg-primary text-center p-3">
-                    <h4 class="text-white m-0">+012 345 67890</h4>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -543,154 +388,17 @@
         <div class="container">
           <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
             <h6 class="section-title text-center text-primary text-uppercase">
-              Related Rooms
+              Vea Otras Habitaciones
             </h6>
             <h1 class="mb-5">
-              Explore More
+              Explore la Galeria de Habitaciones
               <span class="text-primary text-uppercase">Rooms</span>
             </h1>
           </div>
           <div class="row g-4">
-            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-              <div class="room-item rounded">
-                <div class="position-relative">
-                  <img class="img-fluid" src="img/room-1.jpg" alt />
-                  <small
-                    class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4"
-                    >$100/Night</small
-                  >
-                </div>
-                <div class="p-4 mt-2">
-                  <div class="d-flex justify-content-between mb-3">
-                    <h5 class="mb-0">Junior Suite</h5>
-                    <div class="ps-2">
-                      <small class="fa fa-star text-primary"></small>
-                      <small class="fa fa-star text-primary"></small>
-                      <small class="fa fa-star text-primary"></small>
-                      <small class="fa fa-star text-primary"></small>
-                      <small class="fa fa-star text-primary"></small>
-                    </div>
-                  </div>
-                  <div class="d-flex mb-3">
-                    <small class="border-end me-3 pe-3"
-                      ><i class="fa fa-bed text-primary me-2"></i>3 Bed</small
-                    >
-                    <small class="border-end me-3 pe-3"
-                      ><i class="fa fa-bath text-primary me-2"></i>2 Bath</small
-                    >
-                    <small
-                      ><i class="fa fa-wifi text-primary me-2"></i>Wifi</small
-                    >
-                  </div>
-                  <p class="text-body mb-3">
-                    Erat ipsum justo amet duo et elitr dolor, est duo duo eos
-                    lorem sed diam stet diam sed stet lorem.
-                  </p>
-                  <div class="d-flex justify-content-between">
-                    <a class="btn btn-sm btn-primary rounded py-2 px-4" href
-                      >View Detail</a
-                    >
-                    <a class="btn btn-sm btn-dark rounded py-2 px-4" href
-                      >Book Now</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-              <div class="room-item rounded">
-                <div class="position-relative">
-                  <img class="img-fluid" src="img/room-2.jpg" alt />
-                  <small
-                    class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4"
-                    >$100/Night</small
-                  >
-                </div>
-                <div class="p-4 mt-2">
-                  <div class="d-flex justify-content-between mb-3">
-                    <h5 class="mb-0">Executive Suite</h5>
-                    <div class="ps-2">
-                      <small class="fa fa-star text-primary"></small>
-                      <small class="fa fa-star text-primary"></small>
-                      <small class="fa fa-star text-primary"></small>
-                      <small class="fa fa-star text-primary"></small>
-                      <small class="fa fa-star text-primary"></small>
-                    </div>
-                  </div>
-                  <div class="d-flex mb-3">
-                    <small class="border-end me-3 pe-3"
-                      ><i class="fa fa-bed text-primary me-2"></i>3 Bed</small
-                    >
-                    <small class="border-end me-3 pe-3"
-                      ><i class="fa fa-bath text-primary me-2"></i>2 Bath</small
-                    >
-                    <small
-                      ><i class="fa fa-wifi text-primary me-2"></i>Wifi</small
-                    >
-                  </div>
-                  <p class="text-body mb-3">
-                    Erat ipsum justo amet duo et elitr dolor, est duo duo eos
-                    lorem sed diam stet diam sed stet lorem.
-                  </p>
-                  <div class="d-flex justify-content-between">
-                    <a class="btn btn-sm btn-primary rounded py-2 px-4" href
-                      >View Detail</a
-                    >
-                    <a class="btn btn-sm btn-dark rounded py-2 px-4" href
-                      >Book Now</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.6s">
-              <div class="room-item rounded">
-                <div class="position-relative">
-                  <img class="img-fluid" src="img/room-3.jpg" alt />
-                  <small
-                    class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4"
-                    >$100/Night</small
-                  >
-                </div>
-                <div class="p-4 mt-2">
-                  <div class="d-flex justify-content-between mb-3">
-                    <h5 class="mb-0">Super Deluxe</h5>
-                    <div class="ps-2">
-                      <small class="fa fa-star text-primary"></small>
-                      <small class="fa fa-star text-primary"></small>
-                      <small class="fa fa-star text-primary"></small>
-                      <small class="fa fa-star text-primary"></small>
-                      <small class="fa fa-star text-primary"></small>
-                    </div>
-                  </div>
-                  <div class="d-flex mb-3">
-                    <small class="border-end me-3 pe-3"
-                      ><i class="fa fa-bed text-primary me-2"></i>3 Bed</small
-                    >
-                    <small class="border-end me-3 pe-3"
-                      ><i class="fa fa-bath text-primary me-2"></i>2 Bath</small
-                    >
-                    <small
-                      ><i class="fa fa-wifi text-primary me-2"></i>Wifi</small
-                    >
-                  </div>
-                  <p class="text-body mb-3">
-                    Erat ipsum justo amet duo et elitr dolor, est duo duo eos
-                    lorem sed diam stet diam sed stet lorem.
-                  </p>
-                  <div class="d-flex justify-content-between">
-                    <a class="btn btn-sm btn-primary rounded py-2 px-4" href
-                      >View Detail</a
-                    >
-                    <a class="btn btn-sm btn-dark rounded py-2 px-4" href
-                      >Book Now</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
+
             <div class="col-12 text-center wow fadeInUp" data-wow-delay="0.9s">
-              <a href class="btn btn-primary py-3 px-5">Explore All Rooms</a>
+              <a href class="btn btn-primary py-3 px-5">Ver</a>
             </div>
           </div>
         </div>
@@ -700,25 +408,13 @@
         <div class="row justify-content-center">
           <div class="col-lg-10 border rounded p-1">
             <div class="border rounded text-center p-1">
-              <div class="bg-white rounded text-center p-5">
-                <h4 class="mb-4">
-                  Subscribe Our
-                  <span class="text-primary text-uppercase">Newsletter</span>
-                </h4>
-                <div class="position-relative mx-auto" style="max-width: 400px">
-                  <input
-                    class="form-control w-100 py-3 ps-4 pe-5"
-                    type="text"
-                    placeholder="Enter your email"
-                  />
-                  <button
-                    type="button"
-                    class="btn btn-primary py-2 px-3 position-absolute top-0 end-0 mt-2 me-2"
-                  >
-                    Submit
-                  </button>
+                <div class="bg-white rounded text-center p-5">
+                            <h4 class="mb-4">Suscribase a nuestras <span class="text-primary text-uppercase">ofertas</span></h4>
+                            <div class="position-relative mx-auto" style="max-width: 400px;">
+                                <input class="form-control w-100 py-3 ps-4 pe-5" type="text" placeholder="Ingrese su correo electronico">
+                                <button type="button" class="btn btn-primary py-2 px-3 position-absolute top-0 end-0 mt-2 me-2">Enviar</button>
+                            </div>
                 </div>
-              </div>
             </div>
           </div>
         </div>

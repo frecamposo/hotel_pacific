@@ -6,7 +6,10 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-
+import qrcode
+from io import BytesIO
+from django.core.files import File
+from PIL import Image,ImageDraw
 
 class CheckInOut(models.Model):
     id_cio = models.AutoField(primary_key=True)
@@ -101,7 +104,7 @@ class Habitacion(models.Model):
     tv_cable = models.CharField(max_length=1 )
     desayuno = models.CharField(max_length=1 )
     precio_noche = models.DecimalField(max_digits=6, decimal_places=0 )
-    descripcion = models.CharField(max_length=300 )
+    descripcion = models.TextField(max_length=300 )
     activa = models.CharField(max_length=1 )
     num_star = models.DecimalField(max_digits=1,default=2, decimal_places=0 )
     imagen = models.ImageField(upload_to='fotos',default='fotos/no_disponible.jpg')
@@ -149,7 +152,7 @@ class Reserva(models.Model):
     dias = models.DecimalField(max_digits=6, decimal_places=0 )
     valor = models.DecimalField(max_digits=7, decimal_places=0 )
     obs = models.CharField(max_length=100, blank=True, null=True )
-    qr = models.CharField(max_length=120 )
+    qr = models.ImageField(upload_to='qr',default='fotos/no_disponible.jpg')
     id_reg = models.ForeignKey(Cliente, models.DO_NOTHING, db_column='id_reg' )
     id_h = models.ForeignKey(Habitacion, models.DO_NOTHING, db_column='id_h' )
     id_estado = models.ForeignKey(EstadoReserva, models.DO_NOTHING, db_column='id_estado' )
@@ -191,3 +194,14 @@ class Usuarios(models.Model):
     class Meta:
         db_table = 'usuarios'
         
+class Comentario(models.Model):
+    id_comen = models.AutoField(primary_key=True)
+    id_h = models.ForeignKey(Habitacion, models.DO_NOTHING, db_column='id_h' )
+    fecha_creacion = models.DateTimeField()
+    nombre=models.CharField(max_length=45 )
+    correo = models.CharField(max_length=120 )
+    comentario = models.CharField(max_length=220 )
+
+    class Meta:
+        db_table = 'comentario'
+ 

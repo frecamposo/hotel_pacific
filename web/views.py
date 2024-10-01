@@ -12,56 +12,12 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import redirect
 from datetime import datetime
 
+import qrcode
+from io import BytesIO
+from django.core.files import File
+from PIL import Image,ImageDraw
+
 # Create your views here.
-def crear_usuario(request):
-    if request.POST:
-        # Si solo quieres la fecha actual
-        identificacion= request.POST.get("identificacion")
-        nombre = request.POST.get("nombre")
-        ape_paterno = request.POST.get("ap_paterno")
-        ape_materno = request.POST.get("ap_materno")
-        es_nacional=request.POST.get("es_nacional")
-        pais=request.POST.get("pais")
-        habla_espanol=request.POST.get("habla_espanol")
-        idioma_natural=request.POST.get("idioma")
-
-        fecha_solo = fecha_actual.date()
-
-        email = request.POST.get("email")
-        pass1 = request.POST.get("pass1")
-        pass2 = request.POST.get("pass2")
-        fecha_creacion = fecha_solo
-        activo=1
-        if pass1!=pass2:
-            contexto= {"mensaje":"contraseñas son diferentes"}
-            return render(request,"crear_usuario.html",contexto)
-
-        try:
-            usu = User.objects.get(username=nom_usuario)
-            contexto = {"mensaje":"nombre de usuario existe"}
-            return render(request,"crear_usuario.html",contexto)
-        except:  
-            grupo=Group.objects.get(name='colaboradores')
-
-
-            usu = User()
-            usu.first_name=nombre
-            usu.last_name=apellido
-            usu.email=email
-            usu.username=nom_usuario
-            usu.set_password(pass1)
-            usu.save()
-            usu.groups.add(grupo)
-            us = authenticate(request,username=nom_usuario,password=pass1)
-            login_aut(request,us)
-
-            categorias = Categoria.objects.all()
-            contex = {"categorias":categorias}
-            return render(request, "index.html",contex)        
-    return render(request,"crear_usuario.html")
-
-
-
 
 def inicio(request):
     request.session["datos"]=""
@@ -69,7 +25,9 @@ def inicio(request):
 
     # x["valor"]=request.session["datos"]
     # x["habitacion"]=habi(0)
-    return render(request,"index.html",x)
+    comentarios=Comentario.objects.all()
+    mensaje={'comentarios':comentarios}
+    return render(request,"index.html",mensaje)
 
 def quienes_somos(request):
     contexto={}
@@ -87,6 +45,8 @@ def habitaciones(request):
     lista_habitaciones=Habitacion.objects.all()
     contexto={'lista':lista_habitaciones}
     contexto['loop_times'] = range(1, 2)
+    comentarios=Comentario.objects.all()
+    contexto['comentarios']=comentarios
     return render(request,"room.html",contexto)
 
 def servicios(request):
@@ -101,14 +61,117 @@ def acerca(request):
     contexto={}
     return render(request,"acerca.html",contexto)
 
-def det_habitacion(request):
-    contexto={}
-    return render(request,"habitacion.html",contexto)
-        
+    
+def listado_habitaciones(request):
+    hab=Habitacion.objects.all()
+    contexto={'lista_h':hab}
+    return render(request,"listado_habitaciones.html",contexto)
 
+
+def det_habitacion(request,id):
+    habitacion = Habitacion.objects.get(id_h=id)
+    comentarios = Comentario.objects.filter(id_h=habitacion)
+    fotos=Galeria.objects.filter(id_h=habitacion)
+    mensaje=""
+    if request.POST:
+        nombre = request.POST.get("nombre")
+        email = request.POST.get("email")
+        id_h = request.POST.get("id_h")
+        comentario = request.POST.get("comentario")
+        fecha_actual = datetime.now()
+        fecha_solo = fecha_actual.date()
+        mensaje=""
+        print("entro")
+        try:
+            come=Comentario()
+            come.comentario=comentario
+            come.correo=email
+            come.fecha_creacion=fecha_solo
+            come.nombre=nombre
+            come.id_h=habitacion
+            come.save()
+            mensaje="Comentario Registrado"
+            print("Grabado")
+        except BaseException as error:
+            mensaje=error
+            print("mensaje")
+    cantidad_comentarios=Comentario.objects.filter(id_h=habitacion).count()
+    contexto={'habitacion':habitacion,'comentarios':comentarios,"cantidad":cantidad_comentarios}
+    contexto["mensaje"]=mensaje
+    contexto["fotos"]=fotos
+    return render(request,"habitacion.html",contexto)
+
+def insertar_galeria(request):
+    mensaje=""
+    if request.POST:
+        habitacion = request.POST.get("habitacion")
+        imagen = request.FILES.get("imagen")
+        obj_hab = Habitacion.objects.get(id_h=habitacion)
+
+        gale = Galeria()
+        gale.descripcion=''
+        gale.foto=imagen
+        gale.id_h=obj_hab
+        gale.save()
+        mensaje = "Agrego Imagen para habitacion "
+
+    hab=Habitacion.objects.all()
+    contexto={'lista_h':hab,"mensaje":mensaje}
+    return render(request,"listado_habitaciones.html",contexto)
+
+     
 def login(request):
-    contexto={}
+    contexto = {}
+    if request.POST:
+        nombre = request.POST.get("email")
+        password = request.POST.get("pass")
+        us = authenticate(request,username=nombre,password=password)
+        if us is not None and us.is_active:
+            login_aut(request,us)
+            return render(request,"index.html",contexto)
+        else:
+            contexto = {"mensaje":"usuario y contraseña incorrecto"}
+            return render(request,"login.html",contexto)        
     return render(request,"login.html",contexto)
+
+def reserva(request,id):
+    habitacion = Habitacion.objects.get(id_h=id)
+    comentarios = Comentario.objects.filter(id_h=habitacion)
+    fotos=Galeria.objects.filter(id_h=habitacion)
+    mensaje=""
+    if request.POST:
+        f_inicio = request.POST.get("date3")
+        f_termino= request.POST.get("date4")
+        id_h = request.POST.get("id_h")
+        comentario = request.POST.get("comentario")
+        fecha_actual = datetime.now()
+        fecha_solo = fecha_actual.date()
+        mensaje=""
+        print("entro")
+        try:
+            come=Comentario()
+            come.comentario=comentario
+            come.correo=email
+            come.fecha_creacion=fecha_solo
+            come.nombre=nombre
+            come.id_h=habitacion
+            come.save()
+            mensaje="Comentario Registrado"
+            print("Grabado")
+        except BaseException as error:
+            mensaje=error
+            print("mensaje")
+    cantidad_comentarios=Comentario.objects.filter(id_h=habitacion).count()
+    contexto={'habitacion':habitacion,'comentarios':comentarios,"cantidad":cantidad_comentarios}
+    contexto["mensaje"]=mensaje
+    contexto["fotos"]=fotos
+    return render(request,"habitacion.html",contexto)
+
+
+def cerrar_sesion(request):
+    contex = {}
+    logout(request)
+    return render(request,"index.html",contex)
     
 def registro_turista(request):
     if request.POST:
@@ -176,3 +239,48 @@ def registro_turista(request):
             return render(request, "index.html",contex) 
     contex={}       
     return render(request,"registro.html",contex)
+
+def registro_habitacion(request):
+    contex={}
+    if request.POST:
+        # Si solo quieres la fecha actual
+        try:
+            piso= request.POST.get("piso")
+            numero = request.POST.get("numero")
+            cant_personas = request.POST.get("cant_personas")
+            cant_hab = request.POST.get("cant_hab")
+            cant_banos=request.POST.get("cant_banos")
+            metros=request.POST.get("metros")
+            wifi=request.POST.get("wifi")
+            tv=request.POST.get("tv")
+            desayuno=request.POST.get("desayuno")
+            precio=request.POST.get("precio")
+            estrellas=request.POST.get("estrellas")
+            descripcion=request.POST.get("descripcion")
+            tipo_habitacion=request.POST.get("tipo_habitacion")
+            ima  = request.FILES.get("imagen")
+            ha=Habitacion()
+            ha.activa='s'
+            ha.banos=cant_banos
+            ha.cant_personas=cant_personas
+            ha.desayuno=desayuno
+            ha.descripcion=descripcion
+            ha.habitaciones=cant_hab
+            ha.id_th=TipoHabitacion.objects.get(id_th=tipo_habitacion)
+            ha.imagen=ima
+            ha.metros=metros
+            ha.num_star=estrellas
+            ha.numero=numero
+            ha.piso=piso
+            ha.precio_noche=precio
+            ha.tv_cable=tv
+            ha.wifi=wifi
+            ha.save()
+            contex["mensaje"]="Grabo"        
+        except BaseException as error:                                       
+            contex = {"nada":''}
+            return render(request, "index.html",contex) 
+      
+    tipo_h=TipoHabitacion.objects.all()
+    contex["t_hab"]=tipo_h     
+    return render(request,"registro_habitacion.html",contex)
