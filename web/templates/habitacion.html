@@ -322,64 +322,70 @@ Uno de los principales atractivos turísticos de la ciudad es su arquitectura, c
 
 
             <!-- reserva -->
-            <div class="col-lg-4">
-              <div class="bg-light mb-5 wow fadeInUp" data-wow-delay="0.1s">
-                <div class="border-bottom text-center text-dark p-3 pt-4 mb-3">
-                  <span class="align-top fs-4 lh-base">$</span>
-                  <span class="align-middle fs-1 lh-sm fw-bold">{{habitacion.precio_noche}}</span>
-                  <span class="align-bottom fs-6 lh-lg">/ Noche</span>
-                </div>
-                <div class="row g-3 p-4 pt-2">
-                  <div class="col-12">
-                    <div class="date" id="date3" name="date3" data-target-input="nearest">
-                      <input
-                        type="text"
-                        class="form-control datetimepicker-input"
-                        placeholder="Check in"
-                        data-target="#date3"
-                        data-toggle="datetimepicker"
-                      />
-                    </div>
+            
+              <div class="col-lg-4">
+                <div class="bg-light mb-5 wow fadeInUp" data-wow-delay="0.1s">
+                  <div class="border-bottom text-center text-dark p-3 pt-4 mb-3">
+                    <span class="align-top fs-4 lh-base">$</span>
+                    <span class="align-middle fs-1 lh-sm fw-bold">{{habitacion.precio_noche}}</span>
+                    <span class="align-bottom fs-6 lh-lg">/ Noche</span>
                   </div>
-                  <div class="col-12">
-                    <div class="date" id="date4"  name="date4" data-target-input="nearest">
-                      <input
-                        type="text"
-                        class="form-control datetimepicker-input"
-                        placeholder="Check out"
-                        data-target="#date4"
-                        data-toggle="datetimepicker"
-                      />
-                    </div>
-                  </div>
-                  <div class="col-12">
-                    <select class="form-select">
-                      <option selected>Adultos</option>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                    </select>
-                  </div>
-                  
-                  {% if habitacion.activa == "s" %}
-                  <div class="col-12">
-                    <input type="text" name="id_h" value="{{habitacion.id_h}}">
-                    <input type="text" name="id_h" value="{{user.username}}">
-                    <button class="btn btn-primary py-3 w-100">Reservar Ahora</button>
-                  </div>
-                  {% else %}
+                  <div class="row g-3 p-4 pt-2">
+                    <form action="{% url 'EQR' %}" method="post">
+                      {% csrf_token %}
                     <div class="col-12">
-                    <button class="btn btn-danger py-3 w-100">Ocupada</button>
+                      <div class="date" id="date3" name="date3" data-target-input="nearest">
+                        <input
+                          type="text"
+                          class="form-control datetimepicker-input"
+                          placeholder="Check in"
+                          data-target="#date3"
+                          data-toggle="datetimepicker"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="date" id="date4"  name="date4" data-target-input="nearest">
+                        <input
+                          type="text"
+                          class="form-control datetimepicker-input"
+                          placeholder="Check out"
+                          data-target="#date4"
+                          data-toggle="datetimepicker"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <select class="form-select">
+                        <option selected>Adultos</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                      </select>
+                    </div>
+                    
+                    {% if habitacion.activa == "s" %}
+                    <div class="col-12">
+                      <input type="text" name="id_h" value="{{habitacion.id_h}}">
+                      <input type="text" name="id_h" value="{{user.username}}">
+                      <button class="btn btn-primary py-3 w-100" type="submit">Reservar Ahora</button>
+                    </div>
+                    {% else %}
+                      <div class="col-12">
+                      <button class="btn btn-danger py-3 w-100">Ocupada</button>
+                    </div>
+                    {% endif %}
+                    
+                  </form>
+
                   </div>
-                  {% endif %}
-                  
                 </div>
+
+
               </div>
-
-
-            </div>
+            
           </div>
         </div>
       </div>

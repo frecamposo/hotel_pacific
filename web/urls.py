@@ -19,5 +19,5 @@ urlpatterns = [
     path('registro_habitacion',registro_habitacion,name='REHA'),   
     path('listado_habitaciones',listado_habitaciones,name='LH'), 
     path('agregar_galeria',insertar_galeria,name="IG"), 
-    
+    path('envio_qr',enviar_codigo_qr,name="EQR"),
 ]

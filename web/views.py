@@ -16,7 +16,7 @@ import qrcode
 from io import BytesIO
 from django.core.files import File
 from PIL import Image,ImageDraw
-
+from django.core.mail import EmailMessage
 # Create your views here.
 
 def inicio(request):
@@ -133,6 +133,49 @@ def login(request):
             contexto = {"mensaje":"usuario y contraseña incorrecto"}
             return render(request,"login.html",contexto)        
     return render(request,"login.html",contexto)
+
+
+def enviar_codigo_qr(request):
+    # Datos que quieres convertir en un código QR
+    data = "https://www.ejemplo.com"  # Reemplázalo con la URL o información que desees
+
+    # Generar el código QR
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(data)
+    qr.make(fit=True)
+
+    # Crear la imagen del código QR
+    img = qr.make_image(fill_color="black", back_color="white")
+
+    # Guardar la imagen en un buffer
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    buffer.seek(0)
+
+    # Crear el mensaje de correo electrónico
+    email = EmailMessage(
+        subject='fre.campos@duocuc.cl',
+        body='Adjunto encontrarás tu código QR.',
+        from_email='campos.fm@gmail.com',  # Reemplaza con tu correo
+        to=['fre.campos@duocuc.cl'],   # Reemplaza con el correo del destinatario
+    )
+
+    # Adjuntar la imagen del código QR
+    email.attach('codigo_qr.png', buffer.getvalue(), 'image/png')
+
+    # Enviar el correo
+    email.send()
+
+    comentarios=Comentario.objects.all()
+    contexto={'comentarios':comentarios}
+    contexto["mensaje"]="OK"
+    return render(request,"index.html",contexto)
+
 
 def reserva(request,id):
     habitacion = Habitacion.objects.get(id_h=id)
