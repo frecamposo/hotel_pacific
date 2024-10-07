@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'web',
+    'qr_code',
+    
 ]
 
 MIDDLEWARE = [
@@ -148,8 +150,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media') # ubicacion
 localStorage = localStoragePy('me.jkelol111.mypythonapp', 'sqlite')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtp.mail.yahoo.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'campos.fm@gmail.com'  # Reemplaza con tu correo
-EMAIL_HOST_PASSWORD = 'isidora.7'   
+EMAIL_HOST_USER = 'fm_campos@yahoo.com'  # Reemplaza con tu correo
+EMAIL_HOST_PASSWORD = 'dhzxoyrrismgfwif'   

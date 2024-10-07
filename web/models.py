@@ -35,6 +35,7 @@ class Cliente(models.Model):
     pais = models.CharField(max_length=45 )
     habla_espanol = models.CharField(max_length=1 )
     idioma_natural = models.CharField(max_length=45 )
+    email=models.CharField(max_length=100,default='h@h.com' )
     id_user = models.OneToOneField('Usuarios', models.DO_NOTHING, db_column='id_user' )
 
     class Meta:
@@ -151,6 +152,7 @@ class Reserva(models.Model):
     fecha_termino = models.DateTimeField()
     dias = models.DecimalField(max_digits=6, decimal_places=0 )
     valor = models.DecimalField(max_digits=7, decimal_places=0 )
+    cant_personas= models.IntegerField(default=1)
     obs = models.CharField(max_length=100, blank=True, null=True )
     qr = models.ImageField(upload_to='qr',default='fotos/no_disponible.jpg')
     id_reg = models.ForeignKey(Cliente, models.DO_NOTHING, db_column='id_reg' )

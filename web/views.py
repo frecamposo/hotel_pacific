@@ -10,13 +10,16 @@ from django.contrib.auth import authenticate,logout,login as login_aut
 from django.contrib.auth.decorators import login_required, permission_required
 
 from django.shortcuts import redirect
-from datetime import datetime
+from datetime import datetime, timedelta
+import uuid
 
 import qrcode
 from io import BytesIO
 from django.core.files import File
 from PIL import Image,ImageDraw
 from django.core.mail import EmailMessage
+from django.http import HttpResponse
+from django.core.files.base import ContentFile
 # Create your views here.
 
 def inicio(request):
@@ -67,7 +70,7 @@ def listado_habitaciones(request):
     contexto={'lista_h':hab}
     return render(request,"listado_habitaciones.html",contexto)
 
-
+@login_required(login_url='/login/')
 def det_habitacion(request,id):
     habitacion = Habitacion.objects.get(id_h=id)
     comentarios = Comentario.objects.filter(id_h=habitacion)
@@ -99,8 +102,10 @@ def det_habitacion(request,id):
     contexto={'habitacion':habitacion,'comentarios':comentarios,"cantidad":cantidad_comentarios}
     contexto["mensaje"]=mensaje
     contexto["fotos"]=fotos
+    contexto["usuario"]=request.session["email"]
     return render(request,"habitacion.html",contexto)
 
+@login_required(login_url='/login/')
 def insertar_galeria(request):
     mensaje=""
     if request.POST:
@@ -119,6 +124,113 @@ def insertar_galeria(request):
     contexto={'lista_h':hab,"mensaje":mensaje}
     return render(request,"listado_habitaciones.html",contexto)
 
+@login_required(login_url='/login/')
+def reservar(request):
+    contexto={}
+    if request.POST:
+        try:
+            fi=request.POST.get("fi")
+            ft=request.POST.get("ft")
+            # fecha_cad1 = '01-03-2019'
+            # fecha_cad2 = ft[0:10] #'02-03-2019 19:00'
+            # fecha1 = datetime.strptime(fecha_cad1, '%d-%m-%Y')
+            # fecha2 = datetime.strptime(fecha_cad2, '%d-%m-%Y')
+            # res= fecha2 - fecha1
+            # dias = res / timedelta(days=1)
+            fecha1_str =str(fi[6:10])+"-"+str(fi[0:2])+"-"+str(fi[3:5]) # "2023-10-01"
+            fecha2_str =str(ft[6:10])+"-"+str(ft[0:2])+"-"+str(ft[3:5]) # "2024-10-01"
+
+            # Convierte las cadenas a objetos datetime
+            fecha1 = datetime.strptime(fecha1_str, "%Y-%m-%d")
+            fecha2 = datetime.strptime(fecha2_str, "%Y-%m-%d")
+
+            # Calcula la diferencia
+            diferencia = fecha2 - fecha1
+            dias_diferencia =diferencia.days
+            
+            # Muestra la cantidad de días
+            print(f"Días de diferencia: {diferencia.days}")
+            print("inicio:")
+            fecha_inicio=str(fi[6:10])+"-"+str(fi[3:5])+"-"+str(fi[0:2])
+            fecha_termino=str(ft[6:10])+"-"+str(ft[3:5])+"-"+str(ft[0:2])
+            print(str(fi[6:10])+"-"+str(fi[3:5])+"-"+str(fi[0:2]))
+            print("fin:")
+            print(str(ft[6:10])+"-"+str(ft[3:5])+"-"+str(ft[0:2]))
+            contexto["fi"]=fi
+            contexto["ft"]=ft
+            contexto["mensaje"]=diferencia.days
+            datos={
+                'fecha_inicio':fecha_inicio,
+                'fecha_termino':fecha_termino,
+                'dias':dias_diferencia,
+                'valor':request.POST.get("valor")
+                
+            }
+            res=Reserva()
+            res.dias=dias_diferencia
+            res.cant_personas=request.POST.get("cant_personas")
+            res.obs='--'
+            res.fecha_inicio=datetime.strptime(fi, '%m/%d/%Y %I:%M %p') # datetime.strptime(fi, '%d/%m/%Y %I:%M %p')
+            res.fecha_termino=datetime.strptime(ft, '%m/%d/%Y %I:%M %p') # datetime.strptime(ft, '%d/%m/%Y %I:%M %p')
+            res.valor=request.POST.get("valor")
+            obj_est=EstadoReserva.objects.get(id_estado=2)
+            res.id_estado=obj_est
+            obj_hab=Habitacion.objects.get(id_h=request.POST.get("habitacion"))
+            res.id_h=obj_hab
+            obj_cli=Cliente.objects.get(email=request.POST.get("email"))
+            res.id_reg=obj_cli
+            # Datos a codificar
+            correo_cliente=request.POST.get("email")
+            clave=str(uuid.uuid4())
+            print(f"Clave reserva:{clave}")
+            data = clave
+            
+            # Crear código QR
+            qr = qrcode.QRCode(version=1, box_size=10, border=5)
+            qr.add_data(data)
+            qr.make(fit=True)
+
+            img = qr.make_image(fill='black', back_color='white')
+
+            # Convertir a bytes
+            buf = BytesIO()
+            img.save(buf, format='PNG')
+            img_bytes = buf.getvalue()
+
+            # Guardar
+            nombre_archivo= clave+'.png'
+            qr_image = ContentFile(buf.getvalue(), nombre_archivo)
+            
+            res.qr=qr_image
+            res.save()
+                    
+            print(datos)
+            enviar_codigo_qr(redirect,clave=clave,correo=correo_cliente)
+        except BaseException as error:
+            print(f"error grabar reserva {error}")    
+    return render(request,"index.html",contexto)        
+    # return render(request,"login.html",contexto)
+
+def generar_qr2(req):
+    # Datos a codificar
+    data = "https://example.com"
+    
+    # Crear código QR
+    qr = qrcode.QRCode(version=1, box_size=10, border=5)
+    qr.add_data(data)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill='black', back_color='white')
+
+    # Convertir a bytes
+    buf = BytesIO()
+    img.save(buf, format='PNG')
+    img_bytes = buf.getvalue()
+
+    # Guardar
+    qr_image = ContentFile(buf.getvalue(), 'qr_code.png')
+    # Responder con imagen
+    return HttpResponse(img_bytes, content_type='image/png')
      
 def login(request):
     contexto = {}
@@ -128,6 +240,11 @@ def login(request):
         us = authenticate(request,username=nombre,password=password)
         if us is not None and us.is_active:
             login_aut(request,us)
+            usuario=User.objects.get(email=request.POST.get("email"))
+            print("usuario")
+            print(usuario.id)
+            cli=Cliente.objects.get(email=nombre)
+            request.session["email"]=nombre
             return render(request,"index.html",contexto)
         else:
             contexto = {"mensaje":"usuario y contraseña incorrecto"}
@@ -135,9 +252,10 @@ def login(request):
     return render(request,"login.html",contexto)
 
 
-def enviar_codigo_qr(request):
+def enviar_codigo_qr(request,clave,correo):
+    
     # Datos que quieres convertir en un código QR
-    data = "https://www.ejemplo.com"  # Reemplázalo con la URL o información que desees
+    data = clave  # Reemplázalo con la URL o información que desees
 
     # Generar el código QR
     qr = qrcode.QRCode(
@@ -159,10 +277,10 @@ def enviar_codigo_qr(request):
 
     # Crear el mensaje de correo electrónico
     email = EmailMessage(
-        subject='fre.campos@duocuc.cl',
-        body='Adjunto encontrarás tu código QR.',
-        from_email='campos.fm@gmail.com',  # Reemplaza con tu correo
-        to=['fre.campos@duocuc.cl'],   # Reemplaza con el correo del destinatario
+        subject=correo,
+        body='Adjunto encontrarás tu código QR.de tu reserva',
+        from_email='fm_campos@yahoo.com',  # Reemplaza con tu correo
+        to=[correo],   # Reemplaza con el correo del destinatario
     )
 
     # Adjuntar la imagen del código QR
@@ -174,7 +292,7 @@ def enviar_codigo_qr(request):
     comentarios=Comentario.objects.all()
     contexto={'comentarios':comentarios}
     contexto["mensaje"]="OK"
-    return render(request,"index.html",contexto)
+    return 1
 
 
 def reserva(request,id):
@@ -275,6 +393,7 @@ def registro_turista(request):
                 cli.habla_espanol=habla_espanol
                 cli.idioma_natural=idioma_natural
                 cli.id_user=usuarios
+                cli.email=email
                 cli.save()
             except BaseException as errror:
                 print('errror:',errror)
